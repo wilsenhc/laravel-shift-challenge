@@ -12,5 +12,11 @@ class Product extends Model
 
     protected $fillable = [
         'name',
+        'next_product_id',
     ];
+
+    public function nextShift()
+    {
+        return $this->belongsTo(Product::class, 'next_product_id');
+    }
 }

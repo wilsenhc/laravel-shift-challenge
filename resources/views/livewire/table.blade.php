@@ -7,9 +7,9 @@
                 <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">PROJECT</th>
                 <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">RUN</th>
                 <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">STATUS</th>
-                <!-- <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
                     <span class="sr-only">Edit</span>
-                </th> -->
+                </th>
             </tr>
         </thead>
         <tbody class="border-t-2 border-gray-200 text-gray-800">

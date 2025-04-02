@@ -18,6 +18,7 @@ class ProductFactory extends Factory
     {
         return [
             'name' => fake()->word(),
+            'next_product_id' => null,
         ];
     }
 }

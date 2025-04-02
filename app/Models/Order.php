@@ -53,12 +53,12 @@ class Order extends Model
 
     public function ranTwice()
     {
-        return false;
+        return random_int(0, 1) === 1;
     }
 
     public function hasNextUpgradeShift()
     {
-        return true;
+        return random_int(0, 1) === 1;
     }
 
     public function isPaid()
@@ -68,6 +68,6 @@ class Order extends Model
 
     public function eligibleForRerun()
     {
-        return true;
+        return random_int(0, 1) === 1;
     }
 }

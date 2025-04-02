@@ -10,4 +10,8 @@ enum OrderStatus: string
     case Queueing = 'queueing';
     case Running = 'running';
     case Fulfilled = 'fulfilled';
+    case Issue = 'issue';
+    case Failed = 'failed';
+    case Completed = 'completed';
+    case Paused = 'paused';
 }

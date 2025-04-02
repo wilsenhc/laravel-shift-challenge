@@ -42,62 +42,32 @@
     @endif
     <td class="py-4 px-2 text-center">
         <button
-                @unless ($order->status === \App\Enums\OrderStatus::Hold && !$order->ranTwice())
-                wire:cloak
-                @endunless
-                wire:show="order.status === 'issue'"
-                type="button"
-                class="inline-block w-32 px-3 py-1 rounded-full bg-orange-100 text-orange-800 font-bold text-sm whitespace-nowrap hover:bg-orange-200 focus:bg-orange-200 focus:outline-none"
-                title="Review issue and rerun"
-                @click="openIssueModal({
-                    rerun: true,
-                    id: '{{ $order->id }}',
-                    source_branch: '{{ $order->source_branch }}',
-                    repository: '{{ $order->repository }}',
-                    connection_id: '{{ $order->connection_id }}',
-                })"
+            @unless ($order->status === \App\Enums\OrderStatus::Hold && !$order->ranTwice())
+            wire:cloak
+            @endunless
+            wire:show="order.status === 'issue'"
+            type="button"
+            class="inline-block w-32 px-3 py-1 rounded-full bg-orange-100 text-orange-800 font-bold text-sm whitespace-nowrap hover:bg-orange-200 focus:bg-orange-200 focus:outline-none"
+            title="Review issue and rerun"
+            @click="openIssueModal({
+                rerun: true,
+                id: '{{ $order->id }}',
+                source_branch: '{{ $order->source_branch }}',
+                repository: '{{ $order->repository }}',
+                connection_id: '{{ $order->connection_id }}',
+            })"
         >
-            <i class="fa fa-warning fa-fw text-orange-500"></i> Issue
+        <i class="fa fa-warning fa-fw text-orange-500"></i> Issue
         </button>
         <button
-                @unless ($order->status === \App\Enums\OrderStatus::Hold && $order->ranTwice())
-                wire:cloak
-                @endunless
-                wire:show="order.status === 'failed'"
-                type="button"
-                class="inline-block w-32 px-3 py-1 rounded-full bg-red-100 text-red-800 font-bold text-sm whitespace-nowrap hover:bg-red-200 focus:bg-red-200 focus:outline-none"
-                title="Shift failed"
-                @click="openIssueModal({
-                        rerun: false,
-                        id: '{{ $order->id }}',
-                        source_branch: '{{ $order->source_branch }}',
-                        repository: '{{ $order->repository }}',
-                        connection_id: '{{ $order->connection_id }}',
-                    })"
-        >
-            <i class="fa fa-times fa-fw text-red-600"></i> Failed
-        </button>
-        <a
-                @unless ($order->status === \App\Enums\OrderStatus::Fulfilled)
-                wire:cloak
-                @endunless
-                wire:show="order.status === 'completed'"
-                :href="$wire.order.pr_url"
-                class="text-shift-red font-bold text-sm whitespace-nowrap hover:underline focus:underline focus:outline-none"
-                title="View {{ Str::lower(pr_name($order->connection->service)) }}"
-                rel="external"
-                target="_blank">
-            <i class="fa fa-code-fork fa-fw"></i> <span x-text="$wire.order.pr_number"></span>
-        </a>
-        <button
-                @unless ($order->status === \App\Enums\OrderStatus::Pending)
-                wire:cloak
-                @endunless
-                wire:show="order.status === 'paused'"
-                type="button"
-                class="inline-block w-32 px-3 py-1 rounded-full bg-green-100 text-green-800 font-bold text-sm whitespace-nowrap hover:bg-green-200 focus:bg-green-200 focus:outline-none"
-                title="Review and run"
-                @click="openRunModal({
+            @unless ($order->status === \App\Enums\OrderStatus::Hold && $order->ranTwice())
+            wire:cloak
+            @endunless
+            wire:show="order.status === 'failed'"
+            type="button"
+            class="inline-block w-32 px-3 py-1 rounded-full bg-red-100 text-red-800 font-bold text-sm whitespace-nowrap hover:bg-red-200 focus:bg-red-200 focus:outline-none"
+            title="Shift failed"
+            @click="openIssueModal({
                     rerun: false,
                     id: '{{ $order->id }}',
                     source_branch: '{{ $order->source_branch }}',
@@ -105,25 +75,55 @@
                     connection_id: '{{ $order->connection_id }}',
                 })"
         >
-            <i class="fa fa-play fa-fw text-green-700"></i> Pending
+        <i class="fa fa-times fa-fw text-red-600"></i> Failed
+        </button>
+        <a
+            @unless ($order->status === \App\Enums\OrderStatus::Fulfilled)
+            wire:cloak
+            @endunless
+            wire:show="order.status === 'completed'"
+            :href="order.pr_url"
+            class="text-shift-red font-bold text-sm whitespace-nowrap hover:underline focus:underline focus:outline-none"
+            title="View {{ Str::lower(pr_name($order->connection->service)) }}"
+            rel="external"
+            target="_blank">
+        <i class="fa fa-code-fork fa-fw"></i><span x-text="order.pr_number"></span>
+        </a>
+        <button
+            @unless ($order->status === \App\Enums\OrderStatus::Pending)
+            wire:cloak
+            @endunless
+            wire:show="order.status === 'paused'"
+            type="button"
+            class="inline-block w-32 px-3 py-1 rounded-full bg-green-100 text-green-800 font-bold text-sm whitespace-nowrap hover:bg-green-200 focus:bg-green-200 focus:outline-none"
+            title="Review and run"
+            @click="openRunModal({
+                rerun: false,
+                id: '{{ $order->id }}',
+                source_branch: '{{ $order->source_branch }}',
+                repository: '{{ $order->repository }}',
+                connection_id: '{{ $order->connection_id }}',
+            })"
+        >
+        <i class="fa fa-play fa-fw text-green-700"></i> Pending
         </button>
         <div
-                @unless ($order->status === \App\Enums\OrderStatus::Queueing || $order->status === \App\Enums\OrderStatus::Paid)
-                wire:cloak
-                @endunless
-                wire:show="order.status === 'queueing'"
-                class="inline-block w-32 px-3 py-1 rounded-full bg-yellow-100 text-yellow-800 font-bold text-sm whitespace-nowrap cursor-wait"
+            @unless ($order->status === \App\Enums\OrderStatus::Queueing || $order->status === \App\Enums\OrderStatus::Paid)
+            wire:cloak
+            @endunless
+            wire:show="order.status === 'queueing'"
+            class="inline-block w-32 px-3 py-1 rounded-full bg-yellow-100 text-yellow-800 font-bold text-sm whitespace-nowrap cursor-wait"
         >
-            <i class="fa fa-circle-o-notch fa-spin fa-fw text-yellow-600"></i> Queueing...
+        <i class="fa fa-circle-o-notch fa-spin fa-fw text-yellow-600"></i> Queueing...
         </div>
         <div
-                @unless ($order->status === \App\Enums\OrderStatus::Running)
-                wire:cloak
-                @endunless
-                wire:show="order.status === 'running'"
-                class="inline-block w-32 px-3 py-1 rounded-full bg-blue-100 text-blue-800 font-bold text-sm whitespace-nowrap cursor-wait"
+            @unless ($order->status === \App\Enums\OrderStatus::Running)
+            wire:cloak
+            @endunless
+            wire:show="order.status === 'running'"
+            class="inline-block w-32 px-3 py-1 rounded-full bg-blue-100 text-blue-800 font-bold text-sm whitespace-nowrap cursor-wait"
         >
-            <i class="fa fa-cog fa-spin fa-fw text-blue-600"></i> Running...
+        <i class="fa fa-cog fa-spin fa-fw text-blue-600"></i> Running...
         </div>
     </td>
     <td class="py-4 pr-6 pl-2 relative">
@@ -135,6 +135,9 @@
                     'rerun' => $order->eligibleForRerun(),
                 ];
             @endphp
+            @if (!empty(array_filter($items)))
+                <livewire:popover-menu id="{{ $order->id }}" :items="$items" :order="$order"></livewire:popover-menu>
+            @endif
         @endif
     </td>
 </tr>

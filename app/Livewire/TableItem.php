@@ -2,13 +2,14 @@
 
 namespace App\Livewire;
 
+use App\Models\Order;
 use Livewire\Component;
 
 class TableItem extends Component
 {
-    public $order;
+    public Order $order;
 
-    public function mount($order = null)
+    public function mount(Order $order = null)
     {
         $this->order = $order;
     }

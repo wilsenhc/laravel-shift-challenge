@@ -27,22 +27,27 @@ class DatabaseSeeder extends Seeder
 
         Product::factory()->create([
             'name' => 'Laravel 8.x shift',
+            'next_product_id' => 2,
         ]);
 
         Product::factory()->create([
             'name' => 'Laravel 9.x shift',
+            'next_product_id' => 3,
         ]);
 
         Product::factory()->create([
             'name' => 'Laravel 10.x shift',
+            'next_product_id' => 4,
         ]);
 
         Product::factory()->create([
             'name' => 'Laravel 11.x shift',
+            'next_product_id' => 5,
         ]);
 
         Product::factory()->create([
             'name' => 'Laravel 12.x shift',
+            'next_product_id' => null,
         ]);
 
         Order::factory()->count(7)->create();
