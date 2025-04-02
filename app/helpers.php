@@ -6,7 +6,7 @@ if (! function_exists('service_url')) {
      */
     function service_url(?string $service, string $repository): string
     {
-        return 'https://github.com/' . $repository;
+        return 'https://github.com/'.$repository;
     }
 }
 

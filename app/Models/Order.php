@@ -3,12 +3,9 @@
 namespace App\Models;
 
 use App\Enums\OrderStatus;
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Order extends Model
 {
@@ -35,7 +32,7 @@ class Order extends Model
     {
         return [
             'status' => OrderStatus::class,
-            'run_at' => 'datetime'
+            'run_at' => 'datetime',
         ];
     }
 
@@ -73,5 +70,4 @@ class Order extends Model
     {
         return true;
     }
-
 }
