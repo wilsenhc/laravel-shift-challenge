@@ -9,7 +9,7 @@ class TableItem extends Component
 {
     public Order $order;
 
-    public function mount(Order $order = null)
+    public function mount(Order $order)
     {
         $this->order = $order;
     }
