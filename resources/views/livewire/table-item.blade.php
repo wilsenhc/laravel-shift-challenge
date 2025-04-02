@@ -1,10 +1,5 @@
 <tr class="border-t {{ (isset($dashboard) && $order->status === \App\Enums\OrderStatus::Pending) ? 'border-b-2 border-gray-300 border-dashed' : 'border-gray-200'}}">
-        <script>
-            document.addEventListener('livewire:load', function () {
-                console.log(this.$wire);
-            });
-        </script>
-        <td class="py-4 pl-6 pr-2 whitespace-nowrap">
+    <td class="py-4 pl-6 pr-2 whitespace-nowrap">
         <div class="text-gray-800 font-semibold">{{ $order->product->name }}</div>
         <div class="mt-1 text-gray-600">#{{ $order->id }}</div>
     </td>
@@ -48,9 +43,9 @@
     <td class="py-4 px-2 text-center">
         <button
                 @unless ($order->status === \App\Enums\OrderStatus::Hold && !$order->ranTwice())
-                    x-cloak
+                wire:cloak
                 @endunless
-                x-show="$wire.order.status === 'issue'"
+                wire:show="order.status === 'issue'"
                 type="button"
                 class="inline-block w-32 px-3 py-1 rounded-full bg-orange-100 text-orange-800 font-bold text-sm whitespace-nowrap hover:bg-orange-200 focus:bg-orange-200 focus:outline-none"
                 title="Review issue and rerun"
@@ -66,9 +61,9 @@
         </button>
         <button
                 @unless ($order->status === \App\Enums\OrderStatus::Hold && $order->ranTwice())
-                    x-cloak
+                wire:cloak
                 @endunless
-                x-show="$wire.order.status === 'failed'"
+                wire:show="order.status === 'failed'"
                 type="button"
                 class="inline-block w-32 px-3 py-1 rounded-full bg-red-100 text-red-800 font-bold text-sm whitespace-nowrap hover:bg-red-200 focus:bg-red-200 focus:outline-none"
                 title="Shift failed"
@@ -84,9 +79,9 @@
         </button>
         <a
                 @unless ($order->status === \App\Enums\OrderStatus::Fulfilled)
-                    x-cloak
+                wire:cloak
                 @endunless
-                x-show="$wire.order.status === 'completed'"
+                wire:show="order.status === 'completed'"
                 :href="$wire.order.pr_url"
                 class="text-shift-red font-bold text-sm whitespace-nowrap hover:underline focus:underline focus:outline-none"
                 title="View {{ Str::lower(pr_name($order->connection->service)) }}"
@@ -96,9 +91,9 @@
         </a>
         <button
                 @unless ($order->status === \App\Enums\OrderStatus::Pending)
-                    x-cloak
+                wire:cloak
                 @endunless
-                x-show="$wire.order.status === 'paused'"
+                wire:show="order.status === 'paused'"
                 type="button"
                 class="inline-block w-32 px-3 py-1 rounded-full bg-green-100 text-green-800 font-bold text-sm whitespace-nowrap hover:bg-green-200 focus:bg-green-200 focus:outline-none"
                 title="Review and run"
@@ -114,18 +109,18 @@
         </button>
         <div
                 @unless ($order->status === \App\Enums\OrderStatus::Queueing || $order->status === \App\Enums\OrderStatus::Paid)
-                    x-cloak
+                wire:cloak
                 @endunless
-                x-show="$wire.order.status === 'queueing'"
+                wire:show="order.status === 'queueing'"
                 class="inline-block w-32 px-3 py-1 rounded-full bg-yellow-100 text-yellow-800 font-bold text-sm whitespace-nowrap cursor-wait"
         >
             <i class="fa fa-circle-o-notch fa-spin fa-fw text-yellow-600"></i> Queueing...
         </div>
         <div
                 @unless ($order->status === \App\Enums\OrderStatus::Running)
-                    x-cloak
+                wire:cloak
                 @endunless
-                x-show="$wire.order.status === 'running'"
+                wire:show="order.status === 'running'"
                 class="inline-block w-32 px-3 py-1 rounded-full bg-blue-100 text-blue-800 font-bold text-sm whitespace-nowrap cursor-wait"
         >
             <i class="fa fa-cog fa-spin fa-fw text-blue-600"></i> Running...
