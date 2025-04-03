@@ -80,7 +80,7 @@
             <i class="fa fa-code-fork fa-fw"></i><span x-text="$wire.order && $wire.order.pr_number"></span>
         </a>
         @endif
-        @if ($order->status->value === 'paused' || $order->status->value === 'hold' || $order->status->value === 'pending' || $order->status->value === 'fulfilled')
+        @if ($order->status->value === 'paused' || $order->status->value === 'hold' || $order->status->value === 'pending' || $order->status->value === 'fulfilled'  || $order->status->value === 'paid')
         <button
             type="button"
             class="inline-block w-32 px-3 py-1 rounded-full bg-green-100 text-green-800 font-bold text-sm whitespace-nowrap hover:bg-green-200 focus:bg-green-200 focus:outline-none"
