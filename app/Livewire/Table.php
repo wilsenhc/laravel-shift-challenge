@@ -10,7 +10,9 @@ class Table extends Component
     public function render()
     {
         $orders = Order::query()
-            ->with(['product.nextShift'])
+            ->with([
+                'product.nextShift',
+            ])
             ->get();
 
         return view('livewire.table', [

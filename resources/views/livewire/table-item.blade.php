@@ -1,4 +1,4 @@
-<tr class="border-t {{ (isset($dashboard) && $order->status === \App\Enums\OrderStatus::Pending) ? 'border-b-2 border-gray-300 border-dashed' : 'border-gray-200'}}">
+<tr class="border-t {{ (isset($dashboard) && $order->status->value === \App\Enums\OrderStatus::Pending) ? 'border-b-2 border-gray-300 border-dashed' : 'border-gray-200'}}">
     <td class="py-4 pl-6 pr-2 whitespace-nowrap">
         <div class="text-gray-800 font-semibold">{{ $order->product->name }}</div>
         <div class="mt-1 text-gray-600">#{{ $order->id }}</div>
@@ -12,16 +12,13 @@
         </div>
         <div class="mt-1 text-gray-600">{{ $order->source_branch }}</div>
     </td>
-    @if ($order->status === \App\Enums\OrderStatus::Pending)
+    @if ($order->status->value === \App\Enums\OrderStatus::Pending)
         <td class="py-4 px-2">-</td>
     @else
         <td class="py-4 px-2 whitespace-nowrap" title="{{ $order->run_at->format('l, F j, Y') }}">
             @if ($order->status === \App\Enums\OrderStatus::Running || $order->status === \App\Enums\OrderStatus::Queueing)
-                <span x-data="momentsAgo()" x-init="console.log($wire), init({{ $order->id }}, {{ $order->run_at->diffInSeconds(Carbon\Carbon::now()) }})"
-                        @stoptimer.window="stopTimer($event.detail)"
-                >
-                        <span x-text="getTimeElapsed()"></span>
-                    </span>
+
+                {{ $order->run_at->diffForHumans() }}
             @else
                 {{ $order->run_at->diffForHumans() }}
             @endif
@@ -41,11 +38,8 @@
         </td>
     @endif
     <td class="py-4 px-2 text-center">
+        @if ($order->status->value === 'issue' || $order->status->value === 'failed')
         <button
-            @unless ($order->status === \App\Enums\OrderStatus::Hold && !$order->ranTwice())
-            wire:cloak
-            @endunless
-            wire:show="order.status === 'issue'"
             type="button"
             class="inline-block w-32 px-3 py-1 rounded-full bg-orange-100 text-orange-800 font-bold text-sm whitespace-nowrap hover:bg-orange-200 focus:bg-orange-200 focus:outline-none"
             title="Review issue and rerun"
@@ -57,43 +51,37 @@
                 connection_id: '{{ $order->connection_id }}',
             })"
         >
-        <i class="fa fa-warning fa-fw text-orange-500"></i> Issue
+            <i class="fa fa-warning fa-fw text-orange-500"></i> Issue
         </button>
+        @endif
+        @if ($order->status->value === 'failed')
         <button
-            @unless ($order->status === \App\Enums\OrderStatus::Hold && $order->ranTwice())
-            wire:cloak
-            @endunless
-            wire:show="order.status === 'failed'"
             type="button"
             class="inline-block w-32 px-3 py-1 rounded-full bg-red-100 text-red-800 font-bold text-sm whitespace-nowrap hover:bg-red-200 focus:bg-red-200 focus:outline-none"
             title="Shift failed"
             @click="openIssueModal({
-                    rerun: false,
-                    id: '{{ $order->id }}',
-                    source_branch: '{{ $order->source_branch }}',
-                    repository: '{{ $order->repository }}',
-                    connection_id: '{{ $order->connection_id }}',
-                })"
+                rerun: false,
+                id: '{{ $order->id }}',
+                source_branch: '{{ $order->source_branch }}',
+                repository: '{{ $order->repository }}',
+                connection_id: '{{ $order->connection_id }}',
+            })"
         >
-        <i class="fa fa-times fa-fw text-red-600"></i> Failed
+            <i class="fa fa-times fa-fw text-red-600"></i> Failed
         </button>
+        @endif
+        @if ($order->status->value === 'completed')
         <a
-            @unless ($order->status === \App\Enums\OrderStatus::Fulfilled)
-            wire:cloak
-            @endunless
-            wire:show="order.status === 'completed'"
-            :href="order.pr_url"
+            href="github.com"
             class="text-shift-red font-bold text-sm whitespace-nowrap hover:underline focus:underline focus:outline-none"
             title="View {{ Str::lower(pr_name($order->connection->service)) }}"
             rel="external"
             target="_blank">
-        <i class="fa fa-code-fork fa-fw"></i><span x-text="order.pr_number"></span>
+            <i class="fa fa-code-fork fa-fw"></i><span x-text="$wire.order && $wire.order.pr_number"></span>
         </a>
+        @endif
+        @if ($order->status->value === 'paused' || $order->status->value === 'hold' || $order->status->value === 'pending' || $order->status->value === 'fulfilled')
         <button
-            @unless ($order->status === \App\Enums\OrderStatus::Pending)
-            wire:cloak
-            @endunless
-            wire:show="order.status === 'paused'"
             type="button"
             class="inline-block w-32 px-3 py-1 rounded-full bg-green-100 text-green-800 font-bold text-sm whitespace-nowrap hover:bg-green-200 focus:bg-green-200 focus:outline-none"
             title="Review and run"
@@ -105,26 +93,25 @@
                 connection_id: '{{ $order->connection_id }}',
             })"
         >
-        <i class="fa fa-play fa-fw text-green-700"></i> Pending
+            <i class="fa fa-play fa-fw text-green-700"></i> Pending
         </button>
+        @endif
+        @if ($order->status->value === 'queueing')
         <div
-            @unless ($order->status === \App\Enums\OrderStatus::Queueing || $order->status === \App\Enums\OrderStatus::Paid)
-            wire:cloak
-            @endunless
-            wire:show="order.status === 'queueing'"
+            wire:show="status === 'queueing'"
             class="inline-block w-32 px-3 py-1 rounded-full bg-yellow-100 text-yellow-800 font-bold text-sm whitespace-nowrap cursor-wait"
         >
-        <i class="fa fa-circle-o-notch fa-spin fa-fw text-yellow-600"></i> Queueing...
+            <i class="fa fa-circle-o-notch fa-spin fa-fw text-yellow-600"></i> Queueing...
         </div>
+        @endif
+        @if ($order->status->value === 'running')
         <div
-            @unless ($order->status === \App\Enums\OrderStatus::Running)
-            wire:cloak
-            @endunless
-            wire:show="order.status === 'running'"
+            wire:show="status === 'running'"
             class="inline-block w-32 px-3 py-1 rounded-full bg-blue-100 text-blue-800 font-bold text-sm whitespace-nowrap cursor-wait"
         >
-        <i class="fa fa-cog fa-spin fa-fw text-blue-600"></i> Running...
+            <i class="fa fa-cog fa-spin fa-fw text-blue-600"></i> Running...
         </div>
+        @endif
     </td>
     <td class="py-4 pr-6 pl-2 relative">
         @if ($order->status === \App\Enums\OrderStatus::Fulfilled)

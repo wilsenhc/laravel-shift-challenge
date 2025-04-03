@@ -9,13 +9,19 @@ class TableItem extends Component
 {
     public Order $order;
 
+    public string $status;
+
     public function mount(Order $order)
     {
         $this->order = $order;
+
+        $this->status = $order->status->value;
     }
 
     public function render()
     {
-        return view('livewire.table-item');
+        return view('livewire.table-item', [
+            'order' => $this->order,
+        ]);
     }
 }

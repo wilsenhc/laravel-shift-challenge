@@ -13,9 +13,9 @@
             </tr>
         </thead>
         <tbody class="border-t-2 border-gray-200 text-gray-800">
-        @foreach ($orders as $order)
-            <livewire:table-item :order="$order" :key="$order->id">
-        @endforeach
+            @foreach ($orders as $order)
+            <livewire:table-item :$order :key="$order->id">
+            @endforeach
         </tbody>
     </table>
 </div>
